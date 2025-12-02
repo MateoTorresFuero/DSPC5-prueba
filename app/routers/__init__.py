@@ -1,3 +1,0 @@
-"""
-Routers del API
-"""

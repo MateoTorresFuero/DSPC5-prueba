@@ -1,65 +1,44 @@
 """
-Modelos de datos internos
+Modelos simples para Release y Metrics
 """
 from datetime import datetime
-from typing import Optional
-from enum import Enum
 
 
-class RiskStatus(str, Enum):
-    """Estados de riesgo de un release"""
-    OK = "OK"
-    RISKY = "RIESGOSO"
-    UNKNOWN = "DESCONOCIDO"
-
-
-class Release:
-    """Modelo de un release/despliegue"""
+def create_release(version: str, commit: str, metrics: dict = None) -> dict:
+    """
+    Crea un dict de Release
     
-    def __init__(
-        self,
-        version: str,
-        commit: str,
-        timestamp: Optional[datetime] = None,
-        status: RiskStatus = RiskStatus.UNKNOWN
-    ):
-        self.version = version
-        self.commit = commit
-        self.timestamp = timestamp or datetime.now()
-        self.status = status
-        self.metrics: Optional['Metrics'] = None
+    Args:
+        version: Versión del release (ej: v1.0.0)
+        commit: Hash del commit
+        metrics: Dict con métricas (opcional)
     
-    def to_dict(self) -> dict:
-        """Convierte el release a diccionario"""
-        return {
-            "version": self.version,
-            "commit": self.commit,
-            "timestamp": self.timestamp.isoformat(),
-            "status": self.status.value,
-            "metrics": self.metrics.to_dict() if self.metrics else None
-        }
+    Returns:
+        Dict con estructura de release
+    """
+    return {
+        "version": version,
+        "commit": commit,
+        "timestamp": datetime.now().isoformat(),
+        "status": "DESCONOCIDO",
+        "metrics": metrics
+    }
 
 
-class Metrics:
-    """Métricas de un release"""
+def create_metrics(error_rate: float, latency_p95: float, throughput: int) -> dict:
+    """
+    Crea un dict de Metrics
     
-    def __init__(
-        self,
-        error_rate: float,
-        latency_p95: float,
-        throughput: int,
-        errors_5xx: int = 0
-    ):
-        self.error_rate = error_rate
-        self.latency_p95 = latency_p95
-        self.throughput = throughput
-        self.errors_5xx = errors_5xx
+    Args:
+        error_rate: Tasa de errores (0-1)
+        latency_p95: Latencia P95 en ms
+        throughput: Requests por segundo
     
-    def to_dict(self) -> dict:
-        """Convierte las métricas a diccionario"""
-        return {
-            "error_rate": self.error_rate,
-            "latency_p95": self.latency_p95,
-            "throughput": self.throughput,
-            "errors_5xx": self.errors_5xx
-        }
+    Returns:
+        Dict con métricas
+    """
+    return {
+        "error_rate": error_rate,
+        "latency_p95": latency_p95,
+        "throughput": throughput
+    }
