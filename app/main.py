@@ -10,6 +10,10 @@ app = FastAPI(
     version="0.1.0"
 )
 
+@app.get("/")
+def read_root():
+    return {"message": "Release Radar API está en funcionamiento. Visita /docs para la documentación."}
+
 # Almacenamiento en memoria (dict simple)
 releases_db = {}
 
